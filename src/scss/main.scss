@@ -1,0 +1,332 @@
+@import url("https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+
+$input-focus-border-color: #b1deb8;
+$input-focus-box-shadow: 0 0 0 0.2rem rgba(177, 222, 184, 0.5) !default;
+
+@media (max-width: 576px) {
+  .w-sm-50 {
+    width: 50% !important;
+  }
+  .px-sm-2 {
+    padding: 0 2rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .w-md-50 {
+    width: 50% !important;
+  }
+  .p-md-1 {
+    padding: 1rem !important;
+  }
+}
+
+body {
+  font-family: "Lora", serif !important;
+}
+
+main {
+  margin-bottom: 4rem;
+}
+
+.m-header {
+  margin-top: 8rem;
+}
+
+.lh-md {
+  line-height: 1.8;
+}
+
+.custom-bg {
+  background-image: url("../imgs/bg-text.png");
+}
+
+.scribble-logo {
+  font-family: "Kalam", cursive !important;
+}
+
+.font-playfair {
+  font-family: "Playfair Display", serif !important;
+}
+
+.mt-6 {
+  margin-top: 8rem;
+}
+
+.fs-big {
+  font-size: 4rem;
+}
+
+.fs-7 {
+  font-size: 0.8rem;
+}
+
+.fs-tiny {
+  font-size: 0.7rem;
+}
+
+input::placeholder {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+.b-dashed {
+  border-width: 2px;
+  border-style: dashed;
+}
+
+li {
+  list-style-type: none;
+}
+
+.card-box {
+  height: 300px;
+  max-height: 300px;
+}
+
+.post-content {
+  height: 25%;
+  overflow-y: scroll;
+}
+
+.scribbleArea {
+  height: 40vh;
+}
+
+.inputStyle {
+  outline: none;
+  border: none;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.dropdown-item {
+  padding: 0 1rem !important;
+}
+
+.ws-preLine {
+  white-space: pre-line;
+  margin-top: -1rem;
+}
+
+.gap-6 {
+  gap: 6rem;
+}
+
+.nav-link {
+  font-size: 1.2rem !important;
+}
+
+.h-set {
+  max-height: 2.9rem;
+}
+
+[data-bs-theme="custom"] {
+  // Primary color palette
+  --bs-primary: #9ac1a0; // Darker Mint Green
+  --bs-primary-hover: #84a589; // Darker Mint Green for hover effects
+
+  // Secondary color palette
+  --bs-secondary: #89a666; // Muted Olive Green
+  --bs-secondary-hover: #60714e; // Darker Olive Green for hover effects
+
+  // Accent color palette
+  --bs-accent: #6a5339; // Warm Brown for highlights
+  --bs-accent-dark: #838e73; // Muted Grayish Brown for deeper accents
+
+  // Background colors
+  --bs-body-bg: #f7f9f8; // Very Light Gray-Green for the main background
+  --bs-light: #ddf3f0; // Light Mint Green for cards and secondary backgrounds
+  --bs-dark: #60714e; // Deep Olive Green for footers or dark sections
+
+  // Text colors
+  --bs-body-color: #4e5957; // Slate Gray for primary text
+  --bs-secondary-color: #5d6451; // Muted Grayish Brown for secondary text
+
+  // Error color
+  --bs-error: #be2e3c;
+  --bs-error-hover: #a12733;
+  --bs-error-focus: #d04552;
+
+  .text-primary {
+    color: var(--bs-primary) !important;
+  }
+
+  .text-body-secondary {
+    color: var(--bs-secondary-color) !important;
+  }
+
+  // Buttons
+  .btn {
+    font-style: italic;
+    box-shadow: 0 0.125rem 0.5rem rgba(black, 0.15);
+  }
+
+  .btn-md {
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+  }
+
+  .btn-noShadow {
+    box-shadow: none;
+  }
+
+  .btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: var(--bs-body-bg);
+    &:hover {
+      background-color: var(--bs-primary-hover);
+      border-color: var(--bs-primary-hover);
+      color: var(--bs-body-bg);
+    }
+    &:focus {
+      background-color: var(--bs-primary-hover) !important;
+      border-color: var(--bs-primary-hover) !important;
+      color: var(--bs-body-bg);
+    }
+  }
+
+  .btn-secondary {
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+    color: var(--bs-body-bg);
+    &:hover {
+      background-color: var(--bs-secondary-hover);
+      border-color: var(--bs-secondary-hover);
+      color: var(--bs-body-bg);
+    }
+    &:focus {
+      background-color: var(--bs-secondary-hover) !important;
+      border-color: var(--bs-secondary-hover) !important;
+      color: var(--bs-body-bg);
+    }
+  }
+
+  .btn-error {
+    background-color: var(--bs-error);
+    border-color: var(--bs-error);
+    color: var(--bs-body-bg);
+    &:hover {
+      background-color: var(--bs-error-hover);
+      border-color: var(--bs-error-hover);
+      color: var(--bs-body-bg);
+    }
+    &:focus {
+      background-color: var(--bs-error-focus) !important;
+      border-color: var(--bs-error-focus) !important;
+      color: var(--bs-body-bg) !important;
+    }
+  }
+
+  .btn-outline-secondary {
+    border-color: var(--bs-accent);
+    color: var(--bs-accent);
+    &:hover {
+      background-color: var(--bs-accent);
+      border-color: var(--bs-accent);
+      color: var(--bs-body-bg);
+    }
+    &:focus {
+      background-color: var(--bs-secondary-hover) !important;
+      border-color: var(--bs-secondary-hover);
+      color: var(--bs-body-bg);
+    }
+  }
+
+  .delete {
+    border-color: var(--bs-error);
+    color: var(--bs-error);
+    &:hover {
+      background-color: var(--bs-error);
+      border-color: var(--bs-error);
+    }
+  }
+
+  // Radio inputs
+  .radio-check:hover + label {
+    background-color: var(--bs-secondary);
+  }
+
+  .radio-check:checked + label {
+    background-color: var(--bs-secondary);
+    color: var(--bs-body-bg);
+  }
+
+  .radio-check-secondary:checked + label {
+    background: var(--bs-accent);
+    color: var(--bs-body-bg);
+  }
+
+  // Links
+  a {
+    color: var(--bs-primary);
+    &:hover {
+      color: var(--bs-primary-hover);
+    }
+  }
+  .add-post {
+    color: var(--bs-secondary);
+    &:hover {
+      color: var(--bs-secondary-hover);
+    }
+  }
+
+  // Navbar
+  .navbar {
+    background-color: var(--bs-primary);
+    .navbar-brand,
+    .navbar-nav .nav-link {
+      color: var(--bs-dark);
+      &:hover {
+        color: var(--bs-accent-dark);
+      }
+    }
+  }
+
+  .navbar-toggler {
+    border: none !important;
+    --bs-navbar-toggler-focus-width: 0.1rem;
+  }
+
+  // Footer
+  footer {
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+    a {
+      color: var(--bs-primary);
+      &:hover {
+        color: var(--bs-primary-hover);
+      }
+    }
+  }
+
+  // Cards
+  .card {
+    background-color: var(--bs-light);
+    border: 1px solid var(--bs-accent);
+    color: var(--bs-dark);
+  }
+
+  // Alerts
+  .alert-primary {
+    background-color: var(--bs-primary);
+    color: #fff;
+  }
+  .alert-secondary {
+    background-color: var(--bs-secondary);
+    color: #fff;
+  }
+
+  // Custom elements
+  .custom-heading {
+    color: var(--bs-primary);
+  }
+
+  .highlight {
+    color: var(--bs-accent-dark);
+  }
+}
+
+@import "../../node_modules/bootstrap/scss/bootstrap";

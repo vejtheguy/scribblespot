@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head.ejs', {page: "Demo Blog" }) %>
+
+    <body data-bs-theme="custom">
+        <%- include('../partials/nav.ejs', {auth: auth}) %>
+            <main class="container d-flex flex-column m-header px-sm-2">
+                <div class="py-5">
+                    <h1 class="lh-1">Welcome to Paige Turner's Scribble Spot!
+                    </h1>
+                    <span class="ms-1 fs-5"><i>A collection of musings, adventures, and creative scribbles.</i></span>
+                </div>
+                <section class="d-flex flex-column gap-6 mt-5">
+                    <% if (locals.posts) { %>
+                        <% posts.forEach(post=> { %>
+                            <% if (post.publish) { %>
+                                <article class="card-body d-flex flex-column gap-2">
+                                    <div class="border-bottom pb-2">
+                                        <h2 class="card-title mb-2">
+                                            <%= post.title %>
+                                        </h2>
+                                        <span class="card-subtitle text-secondary ms-1">by <%= post.author %> on <%= new
+                                                    Date(post.dateCreated).toLocaleString('en-us',{month:'long',
+                                                    day:'numeric', year:'numeric'}) %></span>
+                                    </div>
+                                    <p class="card-text lh-lg ws-preLine">
+                                        <%= post.content %>
+                                    </p>
+                                </article>
+                                </div>
+                                <% } %>
+                                    <% }) %>
+                                        <% } %>
+                </section>
+            </main>
+    </body>
+
+</html>

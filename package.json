@@ -1,0 +1,22 @@
+{
+  "name": "scribblespot",
+  "version": "1.0.0",
+  "description": "A fun blog style webpage application for creating blog posts. Using Node.js, Express.js, and EJS.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Virgil Jones",
+  "license": "ISC",
+  "dependencies": {
+    "@floating-ui/dom": "^1.6.10",
+    "body-parser": "^1.20.2",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "timeago.js": "^4.0.0-beta.3"
+  }
+}

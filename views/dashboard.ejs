@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="blue">
+<%- include('partials/head.ejs', {page: "Dashboard" }) %>
+
+  <body data-bs-theme="custom">
+    <%- include('partials/nav.ejs', {auth: auth}) %>
+      <main class="container d-flex flex-column align-items-center justify-content-center m-header gap-5">
+        <section class="d-flex flex-column align-items-center text-center py-3 gap-1 w-100">
+          <h1 class="fw-light">
+            Welcome to your Scribble Spot Dashboard <%= fName %>!
+          </h1>
+          <p class="lead text-body-secondary">
+            In your Dashboard, you have full control over your blog posts.
+            Here, you can create new posts, edit existing ones, and publish
+            your thoughts with ease. To get started, simply click on the plus
+            sign and start writing your first post.
+          </p>
+          <p class="lead text-body-secondary">
+            Once you've created a post, you can view all your published
+            content on a custom page that showcases every post you've written.
+          </p>
+          <a href="/<%= url %>" class="btn btn-primary btn-md w-100">View Your Blog</a>
+        </section>
+
+        <section class="container">
+          <ul class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-0 gy-3 g-md-3 p-0" id="scribbleList">
+            <li class="col">
+              <a href="/createPost"
+                class="d-flex align-items-center justify-content-center fs-1 rounded card-box b-dashed">
+                <i class="bi bi-plus-lg"></i>
+              </a>
+            </li>
+            <% if (locals.posts) { %>
+              <% posts.forEach(post=> { %>
+                <li class="col card-box">
+                  <div class="card shadow-sm h-100">
+                    <h3 class="text-truncate card-header">
+                      <%= post.title %>
+                    </h3>
+                    <p class="my-0 text-wrap flex-grow-1 post-content card-body">
+                      <%= post.content %>
+                    </p>
+                    <div class="card-footer d-flex flex-column gap-2">
+                      <small class="text-body-secondary">
+                        Created <%= format(new Date(post.dateCreated)) %>
+                      </small>
+                      <div class="btn-group">
+                        <a href="/editPost?fileName=<%= post.postID %>" method="GET"
+                          class="btn btn-sm btn-outline-secondary btn-noShadow">
+                          Edit
+                        </a>
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-0 btn-noShadow edit"
+                          type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                          <% if (post.publish) { %>
+                            Published
+                            <% } else { %>
+                              Draft<% } %>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                          <li class="btn-sm">
+                            <% if (!post.publish) { %>
+                              <a class="dropdown-item" href="/publishPost?fileName=<%= post.postID %>"
+                                method="GET">Publish</a>
+
+                              <% } else { %>
+                                <a class="dropdown-item" href="/publishPost?fileName=<%= post.postID %>"
+                                  method="GET">Draft</a>
+                                <% } %>
+                          </li>
+                        </ul>
+                        <a href="/confirmDelete?fileName=<%= post.postID %>" method="GET"
+                          class="btn btn-sm btn-outline-secondary delete btn-noShadow">
+                          Delete
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <% }) %>
+                  <% } %>
+          </ul>
+        </section>
+      </main>
+
+  </body>
+
+</html>

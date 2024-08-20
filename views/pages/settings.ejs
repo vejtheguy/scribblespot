@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head.ejs', {page: "Settings" }) %>
+
+  <body data-bs-theme="custom">
+    <%- include('../partials/nav.ejs', {auth: auth}) %>
+      <main class="container d-flex flex-column align-items-center m-header">
+        <h1 class="h1 fw-normal text-left align-self-start">Settings</h1>
+        <form action="/userUpdate" method="POST" class="d-flex flex-column gap-3 mt-3 w-md-50">
+          <div>
+            <span class="d-flex justify-content-between mb-2 align-items-end">
+              <label for="fName">First Name</label>
+              <small class="text-secondary fs-7 fst-italic">required*</small>
+            </span>
+            <input type="text" class="form-control" id="fName" name="fName" value="<%= fName %>" required
+              pattern="^[^\s].+" />
+            <% if (locals.updateFName) { %>
+              <span class="mt-1 fs-7 fst-italic">First name was updated from <%= oldFName %> to <%= fName %>.</span>
+              <% } %>
+          </div>
+          <div>
+            <span class="d-flex justify-content-between mb-2 align-items-end">
+              <label for="lName">Last Name</label>
+              <small class="text-secondary fs-7 fst-italic">required*</small>
+            </span>
+            <input type="text" class="form-control" id="lName" name="lName" value="<%= lName %>" required
+              pattern="^[^\s].+" />
+            <% if (locals.updateLName) { %>
+              <span class="mt-1 fs-7 fst-italic">Last name was updated from <%= oldLName %> to <%= lName %>.</span>
+              <% } %>
+          </div>
+          <div>
+            <span class="d-flex justify-content-between mb-2 align-items-end">
+              <label for="username">Username</label>
+              <small class="text-secondary fs-7 fst-italic">required*</small>
+            </span>
+            <input type="text" class="form-control mb-1" id="updateUsername" name="username" value="<%= username %>"
+              required pattern="^[^\s].+" />
+            <% if (locals.updateUsername) { %>
+              <span class="mt-1 fs-7 fst-italic">Username was updated from <%= oldUsername %> to <%= username %>.</span>
+              <% } %>
+          </div>
+          <div>
+            <span class="d-flex justify-content-between mb-2 align-items-end">
+              <label for="password">Password</label>
+              <small class="text-secondary fs-7 fst-italic">required*</small>
+            </span>
+            <input type="text" class="form-control" id="password" name="password" value="<%= password %>" required
+              pattern="^[^\s]+" />
+            <% if (locals.updatePassword) { %>
+              <span class="mt-1 fs-7 fst-italic">Password was updated from <%= oldPassword %> to <%= password %>.</span>
+              <% } %>
+          </div>
+          <div>
+            <label for="displayName" class="mb-2">Display Name</label>
+            <input type="text" class="form-control" id="displayName" name="displayName" value="<%= displayName %>" />
+            <% if (locals.updateDisplayName) { %>
+              <span class="mt-1 fs-7 fst-italic">Display name was updated
+                from <%= oldDisplayName %>
+                  to <% if (newDisplayName.length> 0) { %><%= displayName %>.
+                      <% } else { %> the default first and last name.<% } %>
+              </span>
+              <% } %>
+          </div>
+          <div>
+            <label for="tagline" class="mb-2">Tagline</label>
+            <input type="text" class="form-control" id="tagline" name="tagline" value="<%= tagline %>" maxlength="80" />
+            <% if (locals.updateTagline) { %>
+              <span class="mt-1 fs-7 fst-italic">Tagline was updated from "<%= oldTagline %>" to <% if
+                    (newTagline.length> 0) { %>"<%= newTagline %>".
+                      <% } else { %> the default tagline.<% } %></span>
+              <% } %>
+          </div>
+          <div>
+            <span class="d-flex justify-content-between mb-2 align-items-end">
+              <label for="url">Custom Url</label>
+              <small class="text-secondary fs-7 text-end fst-italic">Letters and numbers only, required*</small>
+            </span>
+            <input type="text" class="form-control" id="url" name="url" pattern="[A-Za-z0-9]+" value="<%= url %>"
+              required />
+            <% if (locals.updateURL) { %>
+              <span class="mt-1 fs-7 fst-italic">URL was updated from <%= oldURL %> to <%= url %>.</span>
+              <% } %>
+          </div>
+          <input type="submit" value="Update" class="btn btn-primary w-100 py-2 mt-3" />
+        </form>
+      </main>
+  </body>
+
+</html>

@@ -1,0 +1,65 @@
+<nav class="navbar fixed-top p-3 shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand scribble-logo fs-4" href="/"><i class="bi bi-pen me-1"></i><i>Scribble
+                Spot</i></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header p-4">
+                <h5 class="offcanvas-title scribble-logo fs-2" id="offcanvasNavbarLabel">
+                    <i>Scribble
+                        Spot</i>
+                </h5>
+                <button type="button" class="btn-close fs-5" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body px-4 pt-0 d-flex flex-column justify-content-between gap-2">
+                <ul class="navbar-nav justify-content-end gap-1 mb-auto">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">
+                            <i class="bi bi-house-door me-2"></i>
+                            <i>Home</i>
+                        </a>
+                    </li>
+                    <% if (!auth) { %>
+                        <li class="nav-item">
+                            <a href="/demoPage" class="nav-link">
+                                <i class="bi bi-book me-2"></i>
+                                <i>Demo Page</i>
+                            </a>
+                        </li>
+                        <% } %>
+                            <% if (auth) { %>
+                                <li class="nav-item">
+                                    <a href="/dashboard" class="nav-link">
+                                        <i class="bi bi-speedometer2 me-2"></i>
+                                        <i>Dashboard</i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/<%= url %>" class="nav-link">
+                                        <i class="bi bi-person-workspace me-2"></i>
+                                        <i>My Blog</i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/settings" class="nav-link">
+                                        <i class="bi bi-gear me-2"></i>
+                                        <i>Settings</i>
+                                    </a>
+                                </li>
+                                <% } %>
+                </ul>
+                <% if (auth) { %>
+                    <a href="/logout" class="btn btn-secondary btn-md w-100">Logout</a>
+                    <% } else { %>
+                        <a href="/login" class="btn btn-primary btn-md w-100">
+                            Login
+                        </a>
+                        <a href="/getStarted" class="btn btn-secondary btn-md w-100">Sign-up</a>
+                        <% } %>
+            </div>
+        </div>
+    </div>
+</nav>

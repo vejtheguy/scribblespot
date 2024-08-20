@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head.ejs', {page: "Edit Scribble" }) %>
+
+    <body data-bs-theme="custom">
+        <%- include('../partials/nav.ejs', {auth: auth}) %>
+            <main class="container d-flex flex-column m-header">
+                <h1 class="h1 fw-normal text-left">Edit Your Scribble</h1>
+                <div class="w-100 mx-auto d-flex flex-column gap-3">
+                    <form action="/updateScribble?fileName=<%= postID %>" method="POST"
+                        class="d-flex flex-column mt-3 card" id="editScribble">
+                        <div class="card-header d-flex align-items-center gap-2">
+                            <label for="title" class="text-nowrap">Title:</label>
+                            <input type="text" class="form-control" id="title" name="title" value="<%= title %>"
+                                required />
+                        </div>
+                        <div class="card-body d-flex flex-column gap-2">
+                            <label for="content">Edit Your Scribble:</label>
+                            <textarea id="content" name="content" class="scribbleArea form-control"
+                                required><%= content %></textarea>
+                        </div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <span>
+                                <%= author %>
+                            </span>
+                            <div class="btn-group">
+                                <input type="radio" id="publish" name="publishStatus" value="publish"
+                                    class="radio-check" <% if (publishStatus) { %>
+                                checked
+                                <% } %>>
+                                    <label for="publish"
+                                        class="btn btn-sm btn-outline-secondary rounded-start btn-noShadow publish">Publish</label>
+                                    <input type="radio" id="draft" name="publishStatus" value="draft"
+                                        class="radio-check-secondary btn-noShadow" <% if (!publishStatus) { %>
+                                    checked
+                                    <% } %>>
+                                        <label for="draft"
+                                            class="btn btn-sm btn-outline-secondary rounded-end btn-noShadow">Save
+                                            as
+                                            Draft</label>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="d-flex flex-column flex-md-row gap-3">
+                        <input type="submit" form="editScribble" value="Save Changes"
+                            class="btn btn-primary btn-md w-100 h-set" />
+                        <div class="container-fluid p-0">
+                            <button class="btn btn-error btn-md w-100" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#confirmCancel" aria-controls="confirmCancel" aria-expanded="false"
+                                aria-label="Toggle navigation">
+                                Cancel
+                            </button>
+                            <div class="collapse navbar-collapse mt-3 text-center" id="confirmCancel">
+                                <span class="fst-italic">Are you sure you want to discard your changes? This action
+                                    cannot
+                                    be
+                                    undone.</span>
+                                <div
+                                    class="d-flex justify-content-center align-items-center flex-column flex-md-row gap-3 mt-3">
+                                    <input type="submit" form="editScribble" value="Save as Draft"
+                                        formaction="/saveAsDraft?fileName=<%= postID %>"
+                                        class="btn btn-secondary w-100" />
+                                    <a href="/dashboard" class="btn btn-error w-100">Discard Changes</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+    </body>
+
+</html>

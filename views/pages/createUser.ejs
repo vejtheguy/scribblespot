@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head.ejs', {page: "Get Started" }) %>
+
+  <body class="vh-100" data-bs-theme="custom">
+    <%- include('../partials/nav.ejs', {auth:auth}) %>
+      <main class="d-flex flex-column justify-content-center p-5 w-md-50 mx-auto h-100 m-header">
+        <h1 class="h1 fw-normal">Create account</h1>
+        <span class="fs-6"><i>Welcome! Please fill in the information below to create your
+            account.</i></span>
+
+        <form action="/createUser" method="POST" class="d-flex flex-column gap-3 mt-3">
+          <div>
+            <label for="fName" class="mb-2">First Name</label>
+            <input type="text" class="form-control" id="fName" name="fName" placeholder="e.g. Jane" required />
+          </div>
+          <div>
+            <label for="lName" class="mb-2">Last Name</label>
+            <input type="text" class="form-control" id="lName" name="lName" placeholder="e.g. Smith" required />
+          </div>
+          <div>
+            <label for="username" class="mb-2 d-flex justify-content-between align-items-end">Username<span
+                class="fs-7 fst-italic opacity-50">required*</span></label>
+            <input type="text" class="form-control mb-1" id="createdUsername" name="username"
+              placeholder="e.g. JaneSmith" required />
+            <span class="opacity-50 fs-7">
+              <i>Enter a custom username or click below to generate username
+                suggestions. Requires first name.</i>
+            </span>
+            <button class="btn btn-secondary w-100 py-2 mt-1" id="generateBtn" onclick="randomAdj()" disabled>
+              Generate Username
+            </button>
+          </div>
+          <div>
+            <label for="password" class="mb-2">Password</label>
+            <input type="text" class="form-control" id="password" name="password" placeholder="Password" required />
+          </div>
+          <input type="submit" value="Sign up" class="btn btn-primary btn-md w-100 py-2 mt-3" />
+        </form>
+        <span class="d-block text-center mt-2 fs-6"><i>Already have an account?</i>
+          <a href="/login" class="text-decoration-none"><i>Login</i></a></span>
+      </main>
+      <script src="/scripts/randomAdj.js"></script>
+  </body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head.ejs', {page: "Login" }) %>
+
+  <body class="vh-100" data-bs-theme="custom">
+    <%- include('../partials/nav.ejs', {auth: auth}) %>
+      <main class="d-flex flex-column justify-content-center p-5 w-md-50 mx-auto h-100">
+        <h1 class="h1 fw-normal">Sign in</h1>
+        <% if (locals.newPass) { %>
+          <span class="fs-6"><i>Password was updated! Please sign in to your account below.</i></span>
+          <% } else { %>
+            <span class="fs-6"><i>Welcome back! Please sign in to your account below.</i></span>
+            <% } %>
+              <form action="/check" method="POST" class="d-flex flex-column gap-3 mt-3">
+                <div>
+                  <label for="username" class="mb-2">Username</label>
+                  <input type="text" class="form-control" id="username" name="username" placeholder="e.g. JaneSmith"
+                    required />
+                </div>
+                <div>
+                  <label for="password" class="mb-2">Password</label>
+                  <input type="text" class="form-control" id="password" name="password" placeholder="Password"
+                    required />
+                  <span class="d-block mt-1 fs-7"><i>Forgot your password?</i>
+                    <a href="/forgotPassword" class="text-decoration-none"><i>Click here</i></a></span>
+                </div>
+
+                <% if (locals.error) { %>
+                  <span class="<% if (error) { %> <%= error %> <% } else { %> d-none <% } %> text-error"><i>Your <% if
+                        (!user && !pass) { %> username and password <% } else if (!user) { %> username <% } else { %>
+                            password <% } %> was
+                              incorrect.</i>
+                    <% if (!user && !pass) { %><i>Please try again. If you have not created
+                        an account, please <a href="/getStarted" class="text-decoration-none">click here</a> to sign
+                        up.</i>
+                      <% } %>
+                  </span>
+                  <% } %>
+                    <input type="submit" value="Login" class="btn btn-primary btn-md w-100 py-2 mt-3" />
+              </form>
+              <span class="d-block text-center mt-2 fs-6"><i>Don't have an account?</i>
+                <a href="/getStarted" class="text-decoration-none"><i>Sign up</i></a></span>
+      </main>
+  </body>
+
+</html>

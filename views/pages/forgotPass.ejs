@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<%- include('../partials/head.ejs', {page: "Forgot Password" }) %>
+
+  <body class="h-100" data-bs-theme="custom">
+    <%- include('../partials/nav.ejs', {auth: auth}) %>
+      <main class="d-flex flex-column justify-content-center p-5 w-md-50 mx-auto h-100">
+        <h1 class="h1 fw-normal">Forgot Password?</h1>
+        <span class="fs-6"><i>Please enter your username and new password.</i></span>
+        <form action="/newPassword" method="POST" class="d-flex flex-column gap-3 mt-3">
+          <div>
+            <label for="username" class="mb-2">Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="e.g. JaneSmith"
+              required />
+          </div>
+          <div>
+            <label for="newPassword" class="mb-2">New Password</label>
+            <input type="text" class="form-control" id="newPassword" name="newPassword" placeholder="New Password"
+              required />
+          </div>
+          <div>
+            <label for="verifyPassword" class="mb-2">Verify New Password</label>
+            <input type="text" class="form-control" id="verifyPassword" name="verifyPassword"
+              placeholder="Verify New Password" required />
+          </div>
+          <% if (locals.error) { %>
+            <span class="<% if (error) { %> <%= error %> <% } else { %> d-none <% } %> text-error">
+              <% if (!user) { %><i>The username <%= username %> does not exist. Please
+                    try again.</i>
+                <% } %>
+                  <% if (!pass) { %><i>Your passwords did not match.
+                      Please try again.</i>
+                    <% } %>
+            </span>
+            <% } %>
+              <input type="submit" value="Update Password" class="btn btn-primary btn-lg w-100 py-2 mt-3" />
+        </form>
+        <span class="d-block text-center mt-2 fs-6"><i>Don't have an account?</i>
+          <a href="/getStarted" class="text-decoration-none"><i>Sign up</i></a></span>
+      </main>
+  </body>
+
+</html>
