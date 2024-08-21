@@ -23,6 +23,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  fs.readFile("credentials.json", (err, data) => {
+    console.log(data);
+  });
+
   res.render("pages/login.ejs", {
     auth: false,
   });
@@ -355,7 +359,7 @@ app.post("/createUser", (req, res) => {
   fs.writeFile("credentials.json", JSON.stringify(credentials), (err) => {
     if (err) throw err;
   });
-
+  console.log("User was created: ", credentials);
   res.redirect("/login");
 });
 
