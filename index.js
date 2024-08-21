@@ -368,12 +368,14 @@ app.post("/createUser", (req, res) => {
 });
 
 app.post("/check", (req, res) => {
+  console.log("Login screen check: ", credentials);
   fs.readFile("credentials.json", (err, data) => {
     if (err) throw err;
     if (
       req.body.username === JSON.parse(data).username &&
       req.body.password === JSON.parse(data).password
     ) {
+      credentials.fName = data.fName;
       credentials.auth = true;
       fs.writeFileSync("credentials.json", JSON.stringify(credentials));
       res.redirect("/dashboard");
