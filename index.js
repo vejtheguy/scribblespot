@@ -245,11 +245,13 @@ app.post("/userUpdate", (req, res) => {
       return res.status(500).send("Unable to read posts directory");
     }
     files.forEach((file) => {
-      const postContent = JSON.parse(
-        fs.readFileSync(`${postsDir}/${file}`, "utf8")
-      );
-      postContent.author = `${req.body.fName} ${req.body.lName}`;
-      fs.writeFileSync(`${postsDir}/${file}`, JSON.stringify(postContent));
+      if (file.includes(".json")) {
+        const postContent = JSON.parse(
+          fs.readFileSync(`${postsDir}/${file}`, "utf8")
+        );
+        postContent.author = `${req.body.fName} ${req.body.lName}`;
+        fs.writeFileSync(`${postsDir}/${file}`, JSON.stringify(postContent));
+      }
     });
   });
   if (updateURL)
@@ -423,10 +425,12 @@ app.get(`/${credentials.url}`, (req, res) => {
     const publishedPosts = [];
 
     files.forEach((file) => {
-      const postContent = JSON.parse(
-        fs.readFileSync(`${__dirname}/posts/${file}`, "utf8")
-      );
-      posts.push(postContent);
+      if (file.includes(".json")) {
+        const postContent = JSON.parse(
+          fs.readFileSync(`${postsDir}/${file}`, "utf8")
+        );
+        posts.push(postContent);
+      }
     });
 
     posts.sort((a, b) => {
