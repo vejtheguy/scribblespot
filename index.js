@@ -307,10 +307,12 @@ app.get("/dashboard", (req, res) => {
     const posts = [];
 
     files.forEach((file) => {
-      const postContent = JSON.parse(
-        fs.readFileSync(`${postsDir}/${file}`, "utf8")
-      );
-      posts.push(postContent);
+      if (file.includes(".json")) {
+        const postContent = JSON.parse(
+          fs.readFileSync(`${postsDir}/${file}`, "utf8")
+        );
+        posts.push(postContent);
+      }
     });
 
     res.render("dashboard.ejs", {
