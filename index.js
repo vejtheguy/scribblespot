@@ -296,7 +296,10 @@ app.post("/userUpdate", (req, res) => {
 });
 
 app.get("/dashboard", (req, res) => {
-  console.log("Dashboard loaded: ", credentials);
+  const credentialsTest = JSON.parse(
+    fs.readFileSync("credentials.json", "utf8")
+  );
+  console.log("Dashboard loaded: ", credentialsTest);
   const postsDir = __dirname + "/posts";
   fs.readdir(postsDir, (err, files) => {
     if (err) {
