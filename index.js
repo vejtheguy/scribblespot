@@ -4,6 +4,7 @@ import fs from "fs";
 import { format } from "timeago.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import path from "path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
@@ -11,6 +12,7 @@ const port = 4000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+const jsonFilePath = path.join(__dirname, "credentials.json");
 const credentials = JSON.parse(fs.readFileSync("credentials.json", "utf8"));
 const defaultTagline =
   "A collection of musings, adventures, and creative scribbles.";
@@ -495,7 +497,7 @@ app.post("/newScribble", (req, res) => {
   });
 });
 
-jsonReader("credentials.json", (err, data) => {
+jsonReader(jsonFilePath, (err, data) => {
   if (err) {
     console.log("Error reading file:", err);
     return;
