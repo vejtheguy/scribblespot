@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const port = 3000;
+const port = 4000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -30,9 +30,15 @@ function jsonReader(filePath, cb) {
 }
 
 app.get("/", (req, res) => {
-  res.render("index.ejs", {
-    auth: credentials.auth,
-    url: credentials.url,
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log("Error reading file:", err);
+      return;
+    }
+    res.render("index.ejs", {
+      auth: data.auth,
+      url: data.url,
+    });
   });
 });
 
@@ -55,9 +61,17 @@ app.get("/getStarted", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  credentials.auth = false;
-  fs.writeFileSync("credentials.json", JSON.stringify(credentials));
-  res.redirect("/");
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log("Error reading file:", err);
+      return;
+    }
+    data.auth = false;
+    fs.writeFile("credentials.json", JSON.stringify(data), (err) => {
+      if (err) console.log("Error writing file:", err);
+    });
+    res.redirect("/");
+  });
 });
 
 app.get("/demoPage", (req, res) => {
@@ -81,33 +95,51 @@ app.get("/demoPage", (req, res) => {
       );
     });
 
-    res.render("pages/demoPage.ejs", {
-      url: credentials.url,
-      auth: credentials.auth,
-      posts: posts,
-      format,
+    jsonReader("credentials.json", (err, data) => {
+      if (err) {
+        console.log("Error reading file:", err);
+        return;
+      }
+      res.render("pages/demoPage.ejs", {
+        url: data.url,
+        auth: data.auth,
+        posts: posts,
+        format,
+      });
     });
   });
 });
 
 app.get("/settings", (req, res) => {
-  res.render("pages/settings.ejs", {
-    auth: credentials.auth,
-    fName: credentials.fName,
-    lName: credentials.lName,
-    username: credentials.username,
-    password: credentials.password,
-    displayName: credentials.displayName,
-    tagline: credentials.tagline,
-    url: credentials.url,
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log("Error reading file:", err);
+      return;
+    }
+    res.render("pages/settings.ejs", {
+      auth: data.auth,
+      fName: data.fName,
+      lName: data.lName,
+      username: data.username,
+      password: data.password,
+      displayName: data.displayName,
+      tagline: data.tagline,
+      url: data.url,
+    });
   });
 });
 
 app.get("/createPost", (req, res) => {
-  res.render("pages/createPost.ejs", {
-    auth: credentials.auth,
-    author: `${credentials.fName} ${credentials.lName}`,
-    url: credentials.url,
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log("Error reading file:", err);
+      return;
+    }
+    res.render("pages/createPost.ejs", {
+      auth: data.auth,
+      author: `${data.fName} ${data.lName}`,
+      url: data.url,
+    });
   });
 });
 
@@ -375,7 +407,7 @@ app.post("/createUser", (req, res) => {
   };
 
   fs.writeFile("credentials.json", JSON.stringify(credentials), (err) => {
-    if (err) throw err;
+    if (err) console.log("Error writing file:", err);
   });
   console.log("User was created: ", credentials);
   res.redirect("/login");
@@ -384,7 +416,7 @@ app.post("/createUser", (req, res) => {
 app.post("/check", (req, res) => {
   jsonReader("credentials.json", (err, data) => {
     if (err) {
-      console.log(err);
+      console.log("Error reading file:", err);
       return;
     }
     if (
@@ -397,8 +429,10 @@ app.post("/check", (req, res) => {
       });
       res.redirect("/dashboard");
     } else {
-      credentials.auth = false;
-      fs.writeFileSync("credentials.json", JSON.stringify(credentials));
+      data.auth = false;
+      fs.writeFile("credentials.json", JSON.stringify(data), (err) => {
+        if (err) console.log("Error writing file:", err);
+      });
       res.render("pages/login.ejs", {
         error: "d-block",
         user: req.body.username === data.username,
