@@ -147,14 +147,20 @@ app.get("/editPost", (req, res) => {
   const postContent = JSON.parse(
     fs.readFileSync(`${__dirname}/posts/${req.query.fileName}`, "utf8")
   );
-  res.render("pages/editPost.ejs", {
-    auth: credentials.auth,
-    postID: postContent.postID,
-    title: postContent.title,
-    content: postContent.content,
-    author: postContent.author,
-    publishStatus: postContent.publish,
-    url: credentials.url,
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log("Error reading file:", err);
+      return;
+    }
+    res.render("pages/editPost.ejs", {
+      auth: data.auth,
+      postID: postContent.postID,
+      title: postContent.title,
+      content: postContent.content,
+      author: postContent.author,
+      publishStatus: postContent.publish,
+      url: data.url,
+    });
   });
 });
 
@@ -197,14 +203,20 @@ app.get("/confirmDelete", (req, res) => {
   const postContent = JSON.parse(
     fs.readFileSync(`${__dirname}/posts/${req.query.fileName}`, "utf8")
   );
-  res.render("pages/confirmDelete.ejs", {
-    auth: credentials.auth,
-    title: postContent.title,
-    content: postContent.content,
-    author: postContent.author,
-    date: new Date(postContent.dateCreated).toDateString(),
-    fileName: req.query.fileName,
-    url: credentials.url,
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log("Error reading file:", err);
+      return;
+    }
+    res.render("pages/confirmDelete.ejs", {
+      auth: data.auth,
+      title: postContent.title,
+      content: postContent.content,
+      author: postContent.author,
+      date: new Date(postContent.dateCreated).toDateString(),
+      fileName: req.query.fileName,
+      url: data.url,
+    });
   });
 });
 
@@ -220,140 +232,147 @@ app.post("/deleteScribble", (req, res) => {
 });
 
 app.post("/newPassword", (req, res) => {
-  if (credentials.username === req.body.username) {
-    if (req.body.newPassword === req.body.verifyPassword) {
-      credentials.password = req.body.newPassword;
-      fs.writeFileSync("credentials.json", JSON.stringify(credentials));
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log("Error reading file:", err);
+      return;
+    }
+    if (data.username === req.body.username) {
+      if (req.body.newPassword === req.body.verifyPassword) {
+        data.password = req.body.newPassword;
+        fs.writeFile("credentials.json", JSON.stringify(data), (err) => {
+          if (err) console.log("Error writing file:", err);
+        });
+      } else {
+        res.render("pages/forgotPass.ejs", {
+          auth: false,
+          error: "d-block",
+          user: req.body.username === data.username,
+          username: req.body.username,
+          pass: req.body.newPassword === req.body.verifyPassword,
+        });
+      }
     } else {
       res.render("pages/forgotPass.ejs", {
         auth: false,
         error: "d-block",
-        user: req.body.username === credentials.username,
+        user: req.body.username === data.username,
         username: req.body.username,
         pass: req.body.newPassword === req.body.verifyPassword,
       });
     }
-  } else {
-    res.render("pages/forgotPass.ejs", {
+    res.render("pages/login.ejs", {
       auth: false,
-      error: "d-block",
-      user: req.body.username === credentials.username,
-      username: req.body.username,
-      pass: req.body.newPassword === req.body.verifyPassword,
+      newPass: true,
     });
-  }
-
-  res.render("pages/login.ejs", {
-    auth: false,
-    newPass: true,
   });
 });
 
 app.post("/userUpdate", (req, res) => {
-  const updateFName = req.body.fName != credentials.fName;
-  const updateLName = req.body.lName != credentials.lName;
-  const updateUsername = req.body.username != credentials.username;
-  const updatePassword = req.body.password != credentials.password;
-  const updateDisplayName = req.body.displayName != credentials.displayName;
-  const updateTagline = req.body.tagline != credentials.tagline;
-  const updateURL = req.body.url != credentials.url;
-  const oldFName = credentials.fName;
-  const oldLName = credentials.lName;
-  const oldUsername = credentials.username;
-  const oldPassword = credentials.password;
-  const oldDisplayName = credentials.displayName;
-  const oldTagline = credentials.tagline;
-  const oldURL = credentials.url;
-  const postsDir = __dirname + "/posts";
-  const pageDir = __dirname + "/views/pages";
-  credentials.fName = req.body.fName;
-  credentials.lName = req.body.lName;
-  credentials.username = req.body.username;
-  credentials.password = req.body.password;
-  if (req.body.displayName.length === 0) {
-    credentials.displayName = `${req.body.fName} ${req.body.lName}`;
-  } else {
-    credentials.displayName = req.body.displayName;
-  }
-  if (req.body.tagline.length === 0) {
-    credentials.tagline = defaultTagline;
-  } else {
-    credentials.tagline = req.body.tagline;
-  }
-  credentials.url = req.body.url;
-  fs.writeFileSync("credentials.json", JSON.stringify(credentials));
-  fs.readdir(postsDir, (err, files) => {
+  jsonReader("credentials.json", (err, data) => {
     if (err) {
-      return res.status(500).send("Unable to read posts directory");
+      console.log("Error reading file:", err);
+      return;
     }
-    files.forEach((file) => {
-      if (file.includes(".json")) {
-        const postContent = JSON.parse(
-          fs.readFileSync(`${postsDir}/${file}`, "utf8")
-        );
-        postContent.author = `${req.body.fName} ${req.body.lName}`;
-        fs.writeFileSync(`${postsDir}/${file}`, JSON.stringify(postContent));
-      }
+    const updateFName = req.body.fName != data.fName;
+    const updateLName = req.body.lName != data.lName;
+    const updateUsername = req.body.username != data.username;
+    const updatePassword = req.body.password != data.password;
+    const updateDisplayName = req.body.displayName != data.displayName;
+    const updateTagline = req.body.tagline != data.tagline;
+    const updateURL = req.body.url != data.url;
+    const oldFName = data.fName;
+    const oldLName = data.lName;
+    const oldUsername = data.username;
+    const oldPassword = data.password;
+    const oldDisplayName = data.displayName;
+    const oldTagline = data.tagline;
+    const oldURL = data.url;
+    const postsDir = __dirname + "/posts";
+    const pageDir = __dirname + "/views/pages";
+    data.fName = req.body.fName;
+    data.lName = req.body.lName;
+    data.username = req.body.username;
+    data.password = req.body.password;
+    if (req.body.displayName.length === 0) {
+      data.displayName = `${req.body.fName} ${req.body.lName}`;
+    } else {
+      data.displayName = req.body.displayName;
+    }
+    if (req.body.tagline.length === 0) {
+      data.tagline = defaultTagline;
+    } else {
+      data.tagline = req.body.tagline;
+    }
+    data.url = req.body.url;
+    fs.writeFile("credentials.json", JSON.stringify(data), (err) => {
+      if (err) console.log("Error writing file:", err);
     });
-  });
-  if (updateURL)
-    fs.rename(
-      `${pageDir}/${oldURL}.ejs`,
-      `${pageDir}/${req.body.url}.ejs`,
-      (err) => {
-        if (err) {
-          console.log(err, "ERROR");
-        }
+    fs.readdir(postsDir, (err, files) => {
+      if (err) {
+        return res.status(500).send("Unable to read posts directory");
       }
-    );
-  res.render("pages/settings.ejs", {
-    auth: credentials.auth,
-    fName:
-      credentials.fName.trim().charAt(0).toUpperCase() +
-      credentials.fName.trim().slice(1),
-    oldFName: oldFName,
-    updateFName: updateFName,
-    lName:
-      credentials.lName.trim().charAt(0).toUpperCase() +
-      credentials.lName.trim().slice(1),
-    oldLName: oldLName,
-    newLName: req.body.lName,
-    updateLName: updateLName,
-    username: credentials.username,
-    oldUsername: oldUsername,
-    updateUsername: updateUsername,
-    password: credentials.password,
-    oldPassword: oldPassword,
-    newPassword: req.body.password,
-    updatePassword: updatePassword,
-    displayName: credentials.displayName,
-    oldDisplayName: oldDisplayName,
-    newDisplayName: req.body.displayName,
-    updateDisplayName: updateDisplayName,
-    tagline: credentials.tagline,
-    oldTagline: oldTagline,
-    newTagline: req.body.tagline,
-    updateTagline: updateTagline,
-    url: credentials.url,
-    oldURL: oldURL,
-    newURL: req.body.url,
-    updateURL: updateURL,
+      files.forEach((file) => {
+        if (file.includes(".json")) {
+          const postContent = JSON.parse(
+            fs.readFileSync(`${postsDir}/${file}`, "utf8")
+          );
+          postContent.author = `${req.body.fName} ${req.body.lName}`;
+          fs.writeFileSync(`${postsDir}/${file}`, JSON.stringify(postContent));
+        }
+      });
+    });
+    if (updateURL)
+      fs.rename(
+        `${pageDir}/${oldURL}.ejs`,
+        `${pageDir}/${req.body.url}.ejs`,
+        (err) => {
+          if (err) {
+            console.log(err, "ERROR");
+          }
+        }
+      );
+    res.render("pages/settings.ejs", {
+      auth: data.auth,
+      fName:
+        data.fName.trim().charAt(0).toUpperCase() + data.fName.trim().slice(1),
+      oldFName: oldFName,
+      updateFName: updateFName,
+      lName:
+        data.lName.trim().charAt(0).toUpperCase() + data.lName.trim().slice(1),
+      oldLName: oldLName,
+      newLName: req.body.lName,
+      updateLName: updateLName,
+      username: data.username,
+      oldUsername: oldUsername,
+      updateUsername: updateUsername,
+      password: data.password,
+      oldPassword: oldPassword,
+      newPassword: req.body.password,
+      updatePassword: updatePassword,
+      displayName: data.displayName,
+      oldDisplayName: oldDisplayName,
+      newDisplayName: req.body.displayName,
+      updateDisplayName: updateDisplayName,
+      tagline: data.tagline,
+      oldTagline: oldTagline,
+      newTagline: req.body.tagline,
+      updateTagline: updateTagline,
+      url: data.url,
+      oldURL: oldURL,
+      newURL: req.body.url,
+      updateURL: updateURL,
+    });
   });
 });
 
 app.get("/dashboard", (req, res) => {
-  const credentialsTest = JSON.parse(
-    fs.readFileSync("credentials.json", "utf8")
-  );
-  console.log("Dashboard loaded: ", credentialsTest);
   const postsDir = __dirname + "/posts";
   fs.readdir(postsDir, (err, files) => {
     if (err) {
       return res.status(500).send("Unable to read posts directory");
     }
-
     const posts = [];
-
     files.forEach((file) => {
       if (file.includes(".json")) {
         const postContent = JSON.parse(
@@ -362,14 +381,19 @@ app.get("/dashboard", (req, res) => {
         posts.push(postContent);
       }
     });
-
-    res.render("dashboard.ejs", {
-      fName: credentials.fName,
-      lName: credentials.lName,
-      url: credentials.url,
-      auth: true,
-      posts: posts.reverse(),
-      format,
+    jsonReader("credentials.json", (err, data) => {
+      if (err) {
+        console.log("Error reading file:", err);
+        return;
+      }
+      res.render("dashboard.ejs", {
+        fName: data.fName,
+        lName: data.lName,
+        url: data.url,
+        auth: true,
+        posts: posts.reverse(),
+        format,
+      });
     });
   });
 });
@@ -405,11 +429,9 @@ app.post("/createUser", (req, res) => {
     tagline: defaultTagline,
     auth: false,
   };
-
   fs.writeFile("credentials.json", JSON.stringify(credentials), (err) => {
     if (err) console.log("Error writing file:", err);
   });
-  console.log("User was created: ", credentials);
   res.redirect("/login");
 });
 
@@ -440,66 +462,76 @@ app.post("/check", (req, res) => {
         auth: false,
       });
     }
-    console.log("Data from the login check: ", data);
   });
 });
 
 app.post("/newScribble", (req, res) => {
-  const date = new Date();
-  const postName = credentials.username + date.getTime() + ".json";
-  const publishStatus = () => {
-    if (req.body.publishStatus === "publish") {
-      return true;
-    } else {
-      return false;
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log("Error reading file:", err);
+      return;
     }
-  };
-  const post = {
-    postID: postName,
-    title: req.body.title,
-    content: req.body.content,
-    author: `${credentials.fName} ${credentials.lName}`,
-    dateCreated: date,
-    publish: publishStatus(),
-  };
-  fs.writeFile(`posts/${postName}`, JSON.stringify(post), (err) => {
-    if (err) throw err;
+    const date = new Date();
+    const postName = data.username + date.getTime() + ".json";
+    const publishStatus = () => {
+      if (req.body.publishStatus === "publish") {
+        return true;
+      } else {
+        return false;
+      }
+    };
+    const post = {
+      postID: postName,
+      title: req.body.title,
+      content: req.body.content,
+      author: `${data.fName} ${data.lName}`,
+      dateCreated: date,
+      publish: publishStatus(),
+    };
+    fs.writeFile(`posts/${postName}`, JSON.stringify(post), (err) => {
+      if (err) console.log("Error writing file:", err);
+    });
+    res.redirect("/dashboard");
   });
-  res.redirect("/dashboard");
 });
 
-app.get(`/${credentials.url}`, (req, res) => {
-  const postsDir = __dirname + "/posts";
-  fs.readdir(postsDir, (err, files) => {
-    if (err) {
-      return res.status(500).send("Unable to read posts directory");
-    }
+jsonReader("credentials.json", (err, data) => {
+  if (err) {
+    console.log("Error reading file:", err);
+    return;
+  }
+  app.get(`/${data.url}`, (req, res) => {
+    const postsDir = __dirname + "/posts";
+    fs.readdir(postsDir, (err, files) => {
+      if (err) {
+        return res.status(500).send("Unable to read posts directory");
+      }
 
-    const posts = [];
-    const publishedPosts = [];
+      const posts = [];
+      const publishedPosts = [];
 
-    files.forEach((file) => {
-      if (file.includes(".json")) {
-        const postContent = JSON.parse(
-          fs.readFileSync(`${postsDir}/${file}`, "utf8")
+      files.forEach((file) => {
+        if (file.includes(".json")) {
+          const postContent = JSON.parse(
+            fs.readFileSync(`${postsDir}/${file}`, "utf8")
+          );
+          posts.push(postContent);
+        }
+      });
+
+      posts.sort((a, b) => {
+        return (
+          new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
         );
-        posts.push(postContent);
-      }
-    });
+      });
 
-    posts.sort((a, b) => {
-      return (
-        new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
-      );
-    });
+      posts.forEach((post) => {
+        if (post.publish) {
+          publishedPosts.push(post.postID);
+        }
+      });
 
-    posts.forEach((post) => {
-      if (post.publish) {
-        publishedPosts.push(post.postID);
-      }
-    });
-
-    const scribblePage = `<!DOCTYPE html>
+      const scribblePage = `<!DOCTYPE html>
 <html lang="en">
 <%- include('../partials/head.ejs', {page: headTitle }) %>
 
@@ -544,25 +576,26 @@ app.get(`/${credentials.url}`, (req, res) => {
 
 </html>`;
 
-    fs.writeFile(
-      `${__dirname}/views/pages/${credentials.url}.ejs`,
-      scribblePage,
-      (err) => {
-        if (err) throw err;
+      fs.writeFile(
+        `${__dirname}/views/pages/${data.url}.ejs`,
+        scribblePage,
+        (err) => {
+          if (err) throw err;
 
-        res.render(`pages/${credentials.url}.ejs`, {
-          name: `${credentials.fName} ${credentials.lName}`,
-          url: credentials.url,
-          auth: credentials.auth,
-          displayName: credentials.displayName,
-          tagline: credentials.tagline,
-          posts: posts,
-          publishedPosts: publishedPosts,
-          format,
-          headTitle: `${credentials.fName} ${credentials.lName}`,
-        });
-      }
-    );
+          res.render(`pages/${data.url}.ejs`, {
+            name: `${data.fName} ${data.lName}`,
+            url: data.url,
+            auth: data.auth,
+            displayName: data.displayName,
+            tagline: data.tagline,
+            posts: posts,
+            publishedPosts: publishedPosts,
+            format,
+            headTitle: `${data.fName} ${data.lName}`,
+          });
+        }
+      );
+    });
   });
 });
 
