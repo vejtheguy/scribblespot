@@ -15,6 +15,20 @@ const credentials = JSON.parse(fs.readFileSync("credentials.json", "utf8"));
 const defaultTagline =
   "A collection of musings, adventures, and creative scribbles.";
 
+function jsonReader(filePath, cb) {
+  fs.readFile(filePath, (err, fileData) => {
+    if (err) {
+      return cb && cb(err);
+    }
+    try {
+      const object = JSON.parse(fileData);
+      return cb && cb(null, object);
+    } catch (err) {
+      return cb && cb(err);
+    }
+  });
+}
+
 app.get("/", (req, res) => {
   res.render("index.ejs", {
     auth: credentials.auth,
@@ -368,27 +382,31 @@ app.post("/createUser", (req, res) => {
 });
 
 app.post("/check", (req, res) => {
-  console.log("Login screen check: ", credentials);
-  fs.readFile("credentials.json", (err, data) => {
-    if (err) throw err;
+  jsonReader("credentials.json", (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
     if (
-      req.body.username === JSON.parse(data).username &&
-      req.body.password === JSON.parse(data).password
+      req.body.username === data.username &&
+      req.body.password === data.password
     ) {
-      credentials.fName = data.fName;
-      credentials.auth = true;
-      fs.writeFileSync("credentials.json", JSON.stringify(credentials));
+      data.auth = true;
+      fs.writeFile("credentials.json", JSON.stringify(data), (err) => {
+        if (err) console.log("Error writing file:", err);
+      });
       res.redirect("/dashboard");
     } else {
       credentials.auth = false;
       fs.writeFileSync("credentials.json", JSON.stringify(credentials));
       res.render("pages/login.ejs", {
         error: "d-block",
-        user: req.body.username === JSON.parse(data).username,
-        pass: req.body.password === JSON.parse(data).password,
+        user: req.body.username === data.username,
+        pass: req.body.password === data.password,
         auth: false,
       });
     }
+    console.log("Data from the login check: ", data);
   });
 });
 
