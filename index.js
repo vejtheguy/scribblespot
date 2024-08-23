@@ -495,46 +495,38 @@ app.post("/newScribble", (req, res) => {
   });
 });
 
-fs.readFile("credentials.json", "utf8", (err, jsonString) => {
-  if (err) {
-    console.log("File read failed:", err);
-    return;
-  }
-  const data = JSON.parse(jsonString);
-  console.log(data.url);
-  app.get(`/${data.url}`, (req, res) => {
-    console.log("this got called after get: ", data.url);
-    const postsDir = __dirname + "/posts";
-    fs.readdir(postsDir, (err, files) => {
-      if (err) {
-        return res.status(500).send("Unable to read posts directory");
-      }
+app.get("/:dynamicUrl", (req, res) => {
+  const postsDir = __dirname + "/posts";
+  fs.readdir(postsDir, (err, files) => {
+    if (err) {
+      return res.status(500).send("Unable to read posts directory");
+    }
 
-      const posts = [];
-      const publishedPosts = [];
+    const posts = [];
+    const publishedPosts = [];
 
-      files.forEach((file) => {
-        if (file.includes(".json")) {
-          const postContent = JSON.parse(
-            fs.readFileSync(`${postsDir}/${file}`, "utf8")
-          );
-          posts.push(postContent);
-        }
-      });
-
-      posts.sort((a, b) => {
-        return (
-          new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
+    files.forEach((file) => {
+      if (file.includes(".json")) {
+        const postContent = JSON.parse(
+          fs.readFileSync(`${postsDir}/${file}`, "utf8")
         );
-      });
+        posts.push(postContent);
+      }
+    });
 
-      posts.forEach((post) => {
-        if (post.publish) {
-          publishedPosts.push(post.postID);
-        }
-      });
+    posts.sort((a, b) => {
+      return (
+        new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()
+      );
+    });
 
-      const scribblePage = `<!DOCTYPE html>
+    posts.forEach((post) => {
+      if (post.publish) {
+        publishedPosts.push(post.postID);
+      }
+    });
+
+    const scribblePage = `<!DOCTYPE html>
 <html lang="en">
 <%- include('../partials/head.ejs', {page: headTitle }) %>
 
@@ -579,6 +571,11 @@ fs.readFile("credentials.json", "utf8", (err, jsonString) => {
 
 </html>`;
 
+    jsonReader("credentials.json", (err, data) => {
+      if (err) {
+        console.log("Error reading file:", err);
+        return;
+      }
       fs.writeFile(
         `${__dirname}/views/pages/${data.url}.ejs`,
         scribblePage,
@@ -600,6 +597,10 @@ fs.readFile("credentials.json", "utf8", (err, jsonString) => {
       );
     });
   });
+});
+
+app.get("*", (req, res) => {
+  res.status(404).send("404 Not Found");
 });
 
 app.listen(port, () => {
