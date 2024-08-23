@@ -501,7 +501,9 @@ fs.readFile("credentials.json", "utf8", (err, jsonString) => {
     return;
   }
   const data = JSON.parse(jsonString);
+  console.log(data.url);
   app.get(`/${data.url}`, (req, res) => {
+    console.log("this got called after get: ", data.url);
     const postsDir = __dirname + "/posts";
     fs.readdir(postsDir, (err, files) => {
       if (err) {
