@@ -11,15 +11,6 @@ const port = 4000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-const getUserURL = (callback) => {
-  jsonReader("credentials.json", (err, data) => {
-    if (err) {
-      console.log("Error reading file:", err);
-      return;
-    }
-    callback(data.url);
-  });
-};
 
 const defaultTagline =
   "A collection of musings, adventures, and creative scribbles.";
@@ -504,8 +495,13 @@ app.post("/newScribble", (req, res) => {
   });
 });
 
-getUserURL((url) => {
-  app.get(`/${url}`, (req, res) => {
+fs.readFile("credentials.json", "utf8", (err, jsonString) => {
+  if (err) {
+    console.log("File read failed:", err);
+    return;
+  }
+  const data = JSON.parse(jsonString);
+  app.get(`/${data.url}`, (req, res) => {
     const postsDir = __dirname + "/posts";
     fs.readdir(postsDir, (err, files) => {
       if (err) {
@@ -581,31 +577,25 @@ getUserURL((url) => {
 
 </html>`;
 
-      jsonReader("credentials.json", (err, data) => {
-        if (err) {
-          console.log("Error reading file:", err);
-          return;
-        }
-        fs.writeFile(
-          `${__dirname}/views/pages/${data.url}.ejs`,
-          scribblePage,
-          (err) => {
-            if (err) throw err;
+      fs.writeFile(
+        `${__dirname}/views/pages/${data.url}.ejs`,
+        scribblePage,
+        (err) => {
+          if (err) throw err;
 
-            res.render(`pages/${data.url}.ejs`, {
-              name: `${data.fName} ${data.lName}`,
-              url: data.url,
-              auth: data.auth,
-              displayName: data.displayName,
-              tagline: data.tagline,
-              posts: posts,
-              publishedPosts: publishedPosts,
-              format,
-              headTitle: `${data.fName} ${data.lName}`,
-            });
-          }
-        );
-      });
+          res.render(`pages/${data.url}.ejs`, {
+            name: `${data.fName} ${data.lName}`,
+            url: data.url,
+            auth: data.auth,
+            displayName: data.displayName,
+            tagline: data.tagline,
+            posts: posts,
+            publishedPosts: publishedPosts,
+            format,
+            headTitle: `${data.fName} ${data.lName}`,
+          });
+        }
+      );
     });
   });
 });
